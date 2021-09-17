@@ -8,10 +8,13 @@
 
 import discord
 
-from lostark_auction_browser import LostArckAuctionBrowser
+import help
+import message_parser
+import lost_ark_info
+import purchasing_representative
 
-lostark_action_browser = LostArckAuctionBrowser()
 client = discord.Client()
+agent = purchasing_representative.PurchasingRepresentative()
 
 @client.event
 async def on_ready():
@@ -24,7 +27,14 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+    if message.content.startswith('&&'):
+        out_msg = help.OnHelpMessage(message.content)
+        await message.channel.send(out_msg)
 
-client.run("")
+    if message.content.startswith("::"):
+        character_data = message_parser.message_to_character_data(message.content)
+        agent.work(character_data)
+        
+
+
+client.run("ODg3OTc1MjQyOTgxNTc2NzI0.YUL9Yw.axsr3IdNHiXnMW98sbIMh4aZRxc")
