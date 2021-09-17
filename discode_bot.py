@@ -6,6 +6,7 @@
  인식하도록 한다.
 """
 
+from user_info import DISCODE_TOKEN
 import discord
 
 import help
@@ -37,4 +38,4 @@ async def on_message(message):
         
 
 
-client.run("ODg3OTc1MjQyOTgxNTc2NzI0.YUL9Yw.axsr3IdNHiXnMW98sbIMh4aZRxc")
+client.run(DISCODE_TOKEN)
