@@ -34,7 +34,8 @@ async def on_message(message):
 
     if message.content.startswith("::"):
         character_data = message_parser.message_to_character_data(message.content)
-        agent.work(character_data)
+        msg = agent.work(character_data)
+        await message.channel.send(msg)
         
 
 

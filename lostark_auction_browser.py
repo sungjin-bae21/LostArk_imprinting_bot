@@ -3,12 +3,14 @@
     로스트 아크 관련 URL 정보들.
 """
 import time
+from warnings import catch_warnings
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 import system_info
 import user_info
@@ -18,7 +20,9 @@ import lost_ark_info
 class LostArckAuctionBrowser:
     driver = None
     def __init__(self):
-        self.driver = webdriver.Chrome(executable_path=system_info.CHROME_DRIVER_PATH)
+        options = webdriver.ChromeOptions()
+        options.add_argument("--start-fullscreen")
+        self.driver = webdriver.Chrome(executable_path=system_info.CHROME_DRIVER_PATH, options=options)
         # 묵시적 대기, 활성화를 위해 15 초까지 기다린다.
         self.driver.implicitly_wait(15)
 
@@ -41,9 +45,10 @@ class LostArckAuctionBrowser:
     # 평균 가중치의 정보를 넘겨준다.
     def SearchItem(self, item_type, bonus_index, bonus_index2, quality, stats, stats2 = -1):
         wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, "lui-modal__window")))
         wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#lostark-wrapper > div > main > div > div.deal > div.deal-contents > form > fieldset > div > div.bt > button.button.button--deal-detail")))
-        
         detail_search_window = self.driver.find_element_by_css_selector('#lostark-wrapper > div > main > div > div.deal > div.deal-contents > form > fieldset > div > div.bt > button.button.button--deal-detail')
+        wait.until(EC.invisibility_of_element((By.CLASS_NAME, "lui-modal__window")))
         detail_search_window.click()
 
         # 아이템 타입 설정.
@@ -99,7 +104,6 @@ class LostArckAuctionBrowser:
             wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#modal-deal-option > div > div > div.lui-modal__content > div:nth-child(2) > table > tbody > tr:nth-child(4) > td:nth-child(4) > div > div.lui-select__option > label:nth-child(8)")))
             temp_button = self.driver.find_element_by_css_selector("#modal-deal-option > div > div > div.lui-modal__content > div:nth-child(2) > table > tbody > tr:nth-child(4) > td:nth-child(4) > div > div.lui-select__option > label:nth-child(8)")
             temp_button.click()
-            print("yes")
 
         # 기타 상세옵션 1 활성화
         wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#selEtc_0")))
@@ -197,6 +201,23 @@ class LostArckAuctionBrowser:
         temp_button = self.driver.find_element_by_css_selector("#modal-deal-option > div > div > div.lui-modal__button > button.lui-modal__search")
         temp_button.click()
 
+        # 검색 결과가 없는지 확인필요.
+        wait_temp = WebDriverWait(self.driver, 1)
+        try:
+            wait_temp.until(EC.presence_of_element_located((By.CLASS_NAME, "empty")))
+        except TimeoutException:
+            print("item is not empty")
+        else:
+            print("item is empty")
+            return 0
+
+        # 가격순으로 정렬
+        wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#BUY_PRICE")))
+        temp_button = self.driver.find_element_by_css_selector("#BUY_PRICE")
+        temp_button.click()
+
+        time.sleep(1)
+
         # 이미지
         wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#auctionListTbody > tr:nth-child(1) > td:nth-child(1) > div.grade > span.slot > img")))
         # 품질
@@ -209,11 +230,8 @@ class LostArckAuctionBrowser:
         target_price = int(money_str)
 
         return target_price / target_quality
-        
-       
 
         
-
     def __del__(self):
         print("destroy")
         self.driver.quit()

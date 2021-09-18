@@ -60,14 +60,34 @@ def message_to_character_data(message):
     character_data.legend_book_idx = lost_ark_info.bonus_name_to_index(legend_book)
     character_data.hero_book_idx = lost_ark_info.bonus_name_to_index(hero_book)
     
-    character_data.first_stats_idx = lost_ark_info.bonus_name_to_index(first_bonus)
-    character_data.second_bonus_idx = lost_ark_info.bonus_name_to_index(second_bonus)
-    character_data.third_bonus_idx =  lost_ark_info.bonus_name_to_index(third_bonus)
-    character_data.fourth_bonus_idx = lost_ark_info.bonus_name_to_index(fourth_bonus)
-    character_data.fifth_bonus_idx = lost_ark_info.bonus_name_to_index(fifth_bonus)
+    character_data.bonus_idxs.append(lost_ark_info.bonus_name_to_index(first_bonus))
+    character_data.bonus_idxs.append(lost_ark_info.bonus_name_to_index(second_bonus))
+    character_data.bonus_idxs.append(lost_ark_info.bonus_name_to_index(third_bonus))
+    character_data.bonus_idxs.append(lost_ark_info.bonus_name_to_index(fourth_bonus))
+    character_data.bonus_idxs.append(lost_ark_info.bonus_name_to_index(fifth_bonus))
 
-    character_data.first_stats_idx = lost_ark_info.stats_name_to_index(first_stats)
-    character_data.second_bonus_idx = lost_ark_info.stats_name_to_index(second_stats)
+    character_data.stats_idxs.append(lost_ark_info.stats_name_to_index(first_stats))
+    character_data.stats_idxs.append(lost_ark_info.stats_name_to_index(second_stats))
+
+    # TODO : 로직 수정필요 알아보기힘들다.
+    # 각인서 기준으로 정렬
+    pivot = 0
+    for idx in character_data.bonus_idxs:
+        if idx == character_data.hero_book_idx:
+            pivot = idx
+
+    if pivot != 0:
+        character_data.bonus_idxs.remove(pivot)
+        character_data.bonus_idxs.insert(0, pivot)
+
+    pivot = 0
+    for idx in character_data.bonus_idxs:
+        if idx == character_data.legend_book_idx:
+            pivot = idx
+
+    if pivot != 0:
+        character_data.bonus_idxs.remove(pivot)
+        character_data.bonus_idxs.insert(0, pivot)
 
     return character_data
     

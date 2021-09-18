@@ -138,13 +138,8 @@ def item_index_to_type(index):
 
 
 class LostArkCharacterInfo():
-    fist_bonus_idx = -1
-    second_bonus_idx = -1
-    third_bonus_idx = -1
-    fourth_bonus_idx = -1
-    fifth_bonus_idx = -1
-    first_stats_idx = -1
-    second_stats_idx = -1
+    bonus_idxs = []
+    stats_idxs = []
     legend_book_idx = -1
     hero_book_idx = -1
 
