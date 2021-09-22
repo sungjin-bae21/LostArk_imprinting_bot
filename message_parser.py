@@ -15,7 +15,7 @@ def message_to_character_data(message):
     start_idx = message.find("(", 0, len(message))
     end_idx = message.find(")",start_idx, len(message))
     legend_book = message[start_idx+1 : end_idx]
-    
+
     # 전설 각인.
     start_idx = message.find("(", end_idx, len(message))
     end_idx = message.find(")", start_idx, len(message))
@@ -56,10 +56,10 @@ def message_to_character_data(message):
     end_idx = message.find(")", start_idx, len(message))
     second_stats = message[start_idx+1 : end_idx]
 
-    character_data = lost_ark_info.LostArkCharacterInfo() 
+    character_data = lost_ark_info.LostArkCharacterInfo()
     character_data.legend_book_idx = lost_ark_info.bonus_name_to_index(legend_book)
     character_data.hero_book_idx = lost_ark_info.bonus_name_to_index(hero_book)
-    
+
     character_data.bonus_idxs.append(lost_ark_info.bonus_name_to_index(first_bonus))
     character_data.bonus_idxs.append(lost_ark_info.bonus_name_to_index(second_bonus))
     character_data.bonus_idxs.append(lost_ark_info.bonus_name_to_index(third_bonus))
@@ -90,6 +90,3 @@ def message_to_character_data(message):
         character_data.bonus_idxs.insert(0, pivot)
 
     return character_data
-    
-    
-
