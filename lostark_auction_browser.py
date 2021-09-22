@@ -65,10 +65,19 @@ class LostArckAuctionBrowser:
         self.driver.implicitly_wait(15)
         wait_for_page_load(self.driver)
 
+        
+    def init_select_option_datas(self):
         # 상세 검색
         element_click(self.driver, By.CSS_SELECTOR,
                       "#lostark-wrapper > div > main > div > div.deal > div.deal-contents > form > fieldset > div > div.bt > button.button.button--deal-detail")
         
+        # 직업 전체로 변경
+        element_click(self.driver, By.CSS_SELECTOR,
+                      "#selClassDetail > div.lui-select__title")
+
+        element_click(self.driver, By.CSS_SELECTOR,
+                      " #selClassDetail > div.lui-select__option > label:nth-child(1)")
+
         option_list_count = len(
             self.driver.find_elements_by_css_selector(
                 "#selEtc_0 > div.lui-select__option label"))
@@ -94,7 +103,7 @@ class LostArckAuctionBrowser:
         option_list_count = len(
             self.driver.find_elements_by_css_selector(
                 "#selEtcSub_0 > div.lui-select__option label"))
-        time.sleep(10)
+
         i = 1
         while i < option_list_count:
             i += 1
@@ -120,11 +129,11 @@ class LostArckAuctionBrowser:
         # 상세 옵션의 index 가 올바른지 확인 및 수정.
         i = 1
         while i < option_list_count:
-            print(i)
             i += 1
             text_data = wait_for_element_located(self.driver, By.CSS_SELECTOR,
                 "#selEtcSub_1 > div.lui-select__option > label:nth-child({index})".format(index=i)).get_attribute("innerText")
             lost_ark_info.STATS_TABLE.append((text_data, i))
+
 
     # 상세 검색으로 데이터 찾기.
     # 입력 정보 장신구 종류, 각인 + 5, 각인 + 3, 최소 품질
@@ -132,6 +141,13 @@ class LostArckAuctionBrowser:
     def SearchItem(self, item_type, bonus_index, bonus_index2, quality, stats, stats2 = -1):
         element_click(self.driver, By.CSS_SELECTOR,
                       "#lostark-wrapper > div > main > div > div.deal > div.deal-contents > form > fieldset > div > div.bt > button.button.button--deal-detail")
+
+        # 직업 전체로 변경
+        element_click(self.driver, By.CSS_SELECTOR,
+                      "#selClassDetail > div.lui-select__title")
+
+        element_click(self.driver, By.CSS_SELECTOR,
+                      " #selClassDetail > div.lui-select__option > label:nth-child(1)")
 
         # 아이템 타입 설정.
         element_click(self.driver, By.CSS_SELECTOR,
@@ -156,7 +172,6 @@ class LostArckAuctionBrowser:
         element_click(self.driver, By.CSS_SELECTOR,
                       "#modal-deal-option > div > div > div.lui-modal__content > div:nth-child(2) > table > tbody > tr:nth-child(4) > td:nth-child(2) > div > div.lui-select__option > label:nth-child(4)")
 
-        print(123)
         # 돌이 아닌 경우 품질 선택필요
         # 베타 버전이기 떄문에 품질 70 이상을 확인하는 식으로 한다
         if item_type != 9:

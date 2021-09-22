@@ -10,6 +10,10 @@ from lostark_auction_browser import LostArckAuctionBrowser
 from selenium.common.exceptions import TimeoutException
 
 class PurchasingRepresentative():
+    def init_data(self):
+        action = LostArckAuctionBrowser()
+        action.init_select_option_datas()
+
     def work(self, character_data):
         action = LostArckAuctionBrowser()
 
@@ -21,10 +25,10 @@ class PurchasingRepresentative():
         while i < n - 1:
             j = i + 1
             while j < n:
-                #msg1 = lost_ark_info.bonus_index_to_string(character_data.bonus_idxs[i])
-                #msg2 = lost_ark_info.bonus_index_to_string(character_data.bonus_idxs[j])
-                #print(msg1)
-                #print(msg2)
+                msg1 = lost_ark_info.bonus_index_to_string(character_data.bonus_idxs[i])
+                msg2 = lost_ark_info.bonus_index_to_string(character_data.bonus_idxs[j])
+                print(msg1)
+                print(msg2)
                 try:
                     max = action.SearchItem(11, character_data.bonus_idxs[i], character_data.bonus_idxs[j], 0, character_data.stats_idxs[0], character_data.stats_idxs[1])
                     if max < min:
@@ -37,9 +41,9 @@ class PurchasingRepresentative():
                 j = j + 1
             i = i + 1
 
-        #msg1 = lost_ark_info.bonus_index_to_string(pivot[0])
-        #msg2 = lost_ark_info.bonus_index_to_string(pivot[1])
-        #return "저렴한 목걸이의 각인은 +5 {first} +3 {second} 입니다".format(first=msg1, second=msg2)
+        msg1 = lost_ark_info.bonus_index_to_string(pivot[0])
+        msg2 = lost_ark_info.bonus_index_to_string(pivot[1])
+        return "저렴한 목걸이의 각인은 +5 {first} +3 {second} 입니다".format(first=msg1, second=msg2)
 
         # 돌 검색
 
