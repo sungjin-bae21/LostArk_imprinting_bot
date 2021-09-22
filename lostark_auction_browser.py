@@ -78,30 +78,53 @@ class LostArckAuctionBrowser:
         while i < option_list_count:
             i += 1
             text_data = wait_for_element_located(self.driver, By.CSS_SELECTOR,
-                "#selEtc_0 > div.lui-select__option > label:nth-child({index})".format(index=i)).get_attribute("innerText")
-                
-            option_data = lost_ark_info.OPTION_SELECT_TABLE[i-1]
-            if option_data[0] != text_data:
-                lost_ark_info.OPTION_SELECT_TABLE[i-1] = (text_data, i-1)
+                "#selEtc_0 > div.lui-select__option > label:nth-child({index})".format(index=i)).get_attribute("innerText") 
+            lost_ark_info.OPTION_SELECT_TABLE.append((text_data,i))
 
         # 상세 리스트 클릭
         element_click(self.driver, By.CSS_SELECTOR,
                       "#selEtc_0 > div.lui-select__title")
 
         # 각인 옵션 클릭.
-        option_idx = lost_ark_info.option_name_to_index("각인 효과") + 1
+        option_idx = lost_ark_info.option_name_to_index("각인 효과")
         element_click(self.driver, By.CSS_SELECTOR,
                       "#selEtc_0 > div.lui-select__option > label:nth-child({index})".format(index=option_idx))
 
-        print("aaaa")
-        time.sleep(30)
+        # 각인 목록의 길이 확인
+        option_list_count = len(
+            self.driver.find_elements_by_css_selector(
+                "#selEtcSub_0 > div.lui-select__option label"))
+        time.sleep(10)
+        i = 1
+        while i < option_list_count:
+            i += 1
+            text_data = wait_for_element_located(self.driver, By.CSS_SELECTOR,
+                "#selEtcSub_0 > div.lui-select__option > label:nth-child({index})".format(index=i)).get_attribute("innerText")
+            lost_ark_info.BONUS_TABLE.append((text_data, i))
 
-        # 각인 옵션의 index 가 올바른지 확인 및 수정.
+        # 상세 리스트 클릭
+        element_click(self.driver, By.CSS_SELECTOR,
+                      "#selEtc_1 > div.lui-select__title")
 
-        # 전투 특성 옵션 클릭
+        # 각인 옵션 클릭.
+        option_idx = lost_ark_info.option_name_to_index("전투 특성")
+        element_click(self.driver, By.CSS_SELECTOR,
+                      "#selEtc_1 > div.lui-select__option > label:nth-child({index})".format(index=option_idx))
 
-        # 전투 옵션의 index 가 올바른지 확인 및 수정.
+        # 각인 목록의 길이 확인
+        option_list_count = len(
+            self.driver.find_elements_by_css_selector(
+                "#selEtcSub_1 > div.lui-select__option label"))
 
+
+        # 상세 옵션의 index 가 올바른지 확인 및 수정.
+        i = 1
+        while i < option_list_count:
+            print(i)
+            i += 1
+            text_data = wait_for_element_located(self.driver, By.CSS_SELECTOR,
+                "#selEtcSub_1 > div.lui-select__option > label:nth-child({index})".format(index=i)).get_attribute("innerText")
+            lost_ark_info.STATS_TABLE.append((text_data, i))
 
     # 상세 검색으로 데이터 찾기.
     # 입력 정보 장신구 종류, 각인 + 5, 각인 + 3, 최소 품질
