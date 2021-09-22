@@ -6,7 +6,6 @@
 
 
 # selenium의 webdriver를 가져온다.
-import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -41,7 +40,6 @@ pwd_input_window.send_keys(Keys.ENTER)
 
 wait = WebDriverWait(chrome_driver, 10)
 element = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "bingo-event-img")))
-chrome_driver.get(lost_ark_info.ACTION_URL)
+#chrome_driver.get(lost_ark_info.ACTION_URL)
 
-time.sleep(2)
 chrome_driver.quit()

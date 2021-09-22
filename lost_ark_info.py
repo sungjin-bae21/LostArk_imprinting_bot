@@ -82,10 +82,24 @@ STATS_TABLE = [("치명", 2),
                ("특화", 3)]
 
 
-ITEM_TYPE_TABLE = [("목걸이", 1),
-                   ("반지", 2),
-                   ("귀걸이", 3),
-                   ("어빌리티 스톤", 4)]
+ITEM_TYPE_TABLE = [("목걸이", 11),
+                   ("반지", 13),
+                   ("귀걸이", 12),
+                   ("어빌리티 스톤", 9)]
+
+OPTION_SELECT_TABLE = [("전체", 0),
+                       ("기본 효과", 1),
+                       ("전투 특성", 2),
+                       ("각인 효과", 3),
+                       ("옵션 수량", 4),
+                       ("특수 효과", 5)]
+
+def option_name_to_index(option_name):
+    for data in OPTION_SELECT_TABLE:
+        if data[0] == option_name:
+            return data[1] 
+
+    print("Error : " + option_name + " isn't in the table")
 
 
 def bonus_name_to_index(bonus_name):

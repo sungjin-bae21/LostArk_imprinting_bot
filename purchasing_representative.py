@@ -26,7 +26,7 @@ class PurchasingRepresentative():
                 print(msg1)
                 print(msg2)
                 try:
-                    max = action.SearchItem(1, character_data.bonus_idxs[i], character_data.bonus_idxs[j], 0, character_data.stats_idxs[0], character_data.stats_idxs[1])
+                    max = action.SearchItem(11, character_data.bonus_idxs[i], character_data.bonus_idxs[j], 0, character_data.stats_idxs[0], character_data.stats_idxs[1])
                     if max < min:
                         pivot[0] = character_data.bonus_idxs[i]
                         pivot[1] = character_data.bonus_idxs[j]
@@ -41,8 +41,6 @@ class PurchasingRepresentative():
         msg2 = lost_ark_info.bonus_index_to_string(pivot[1])
         return "저렴한 목걸이의 각인은 +5 {first} +3 {second} 입니다".format(first=msg1, second=msg2)
 
-
-        time.sleep(100)
         # 돌 검색
 
         # 목걸이 검색
