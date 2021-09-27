@@ -37,6 +37,13 @@ def wait_for_page_load(driver, timeout=30):
         driver.staleness_of(old_page)
     )
 
+def wait_for_page_load2(driver, str,timeout=30):
+    old_page = driver.find_element_by_css_selector(str)
+    yield
+    WebDriverWait(driver, timeout).until(
+        driver.staleness_of(old_page)
+    )
+
 
 
 ## TODO : 아이템 종류가 다를때 특성, 각인 선택 부분이 달라지는데 동작하기 때문에 지금은 넘어간다.
@@ -57,8 +64,9 @@ class LostArckAuctionBrowser:
         pwd_window.send_keys(user_info.PWD)
         pwd_window.send_keys(Keys.ENTER)
 
-        wait = WebDriverWait(self.driver, 10)
-        wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "bingo-event-img")))
+        time.sleep(1)
+        #wait = WebDriverWait(self.driver, 10)
+        #wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "bingo-event-img")))
 
         # 경매장 페이지 열기
         self.driver.get(lost_ark_info.AUCTION_URL)
@@ -67,6 +75,9 @@ class LostArckAuctionBrowser:
 
         
     def init_select_option_datas(self):
+        # 로딩이 되었는지 확인
+        wait_for_page_load(self.driver)
+
         # 상세 검색
         element_click(self.driver, By.CSS_SELECTOR,
                       "#lostark-wrapper > div > main > div > div.deal > div.deal-contents > form > fieldset > div > div.bt > button.button.button--deal-detail")
@@ -80,7 +91,7 @@ class LostArckAuctionBrowser:
 
         option_list_count = len(
             self.driver.find_elements_by_css_selector(
-                "#selEtc_0 > div.lui-select__option label"))
+                "#selEtc_0 > div.lui-select__option > label"))
 
         # 상세 옵션의 index 가 올바른지 확인 및 수정.
         i = 1
@@ -102,7 +113,7 @@ class LostArckAuctionBrowser:
         # 각인 목록의 길이 확인
         option_list_count = len(
             self.driver.find_elements_by_css_selector(
-                "#selEtcSub_0 > div.lui-select__option label"))
+                "#selEtcSub_0 > div.lui-select__option > label"))
 
         i = 1
         while i < option_list_count:
@@ -123,8 +134,7 @@ class LostArckAuctionBrowser:
         # 각인 목록의 길이 확인
         option_list_count = len(
             self.driver.find_elements_by_css_selector(
-                "#selEtcSub_1 > div.lui-select__option label"))
-
+                "#selEtcSub_1 > div.lui-select__option > label"))
 
         # 상세 옵션의 index 가 올바른지 확인 및 수정.
         i = 1
@@ -182,18 +192,15 @@ class LostArckAuctionBrowser:
             element_click(self.driver, By.CSS_SELECTOR,
                           "#modal-deal-option > div > div > div.lui-modal__content > div:nth-child(2) > table > tbody > tr:nth-child(4) > td:nth-child(4) > div > div.lui-select__option > label:nth-child(8)")
 
-        print("aaaa")
         # 기타 상세옵션 1 활성화
         element_click(self.driver, By.CSS_SELECTOR,
                       "#selEtc_0")
 
-        print("bbbbb")
 
         # 기타 상세옵션 1 각인으로 설정
         element_click(self.driver, By.CSS_SELECTOR,
                       "#selEtc_0 > div.lui-select__option > label:nth-child(3)")
 
-        print("ccccc")
         # 기타 상세옵션 2 활성화
         element_click(self.driver, By.CSS_SELECTOR,
                       "#selEtc_1")
@@ -267,38 +274,51 @@ class LostArckAuctionBrowser:
         element_click(self.driver, By.CSS_SELECTOR,
                       "#modal-deal-option > div > div > div.lui-modal__button > button.lui-modal__search")
 
-        # 검색 결과가 없는지 확인필요.
-        try:
-            wait_for_not_element_located(self.driver, By.CLASS_NAME, "empty")
-        except TimeoutException:
-            print("item is not empty")
-        finally:
-            print("item is empty")
+
+        # 테이블 업데이트
+        time.sleep(2)
+        option_list_count = len(self.driver.find_elements_by_css_selector("#auctionListTbody > tr"))
+
+        # 사이즈가 1 이면 아이템이 없다.
+        if option_list_count == 1:
+            return []
 
         # 가격순으로 정렬
         element_click(self.driver, By.CSS_SELECTOR,
                       "#BUY_PRICE")
-        
-        # 이미지 클릭이 가능한지 확인해 로딩이 완료되었는지 확인한다.
-        element_click(self.driver, By.CSS_SELECTOR,
-                      "#auctionListTbody > tr:nth-child(1) > td:nth-child(1) > div.grade > span.slot > img")
-        
-        # 품질
-        temp_quailty = wait_for_element_located(self.driver, By.CSS_SELECTOR,
-                                                "#auctionListTbody > tr:nth-child(1) > td:nth-child(3) > div > span.txt")
-        print("품질 : {aaa}".format(aaa=temp_quailty))
-        target_quality = int(temp_quailty.text)
 
-        # 가격
-        temp_quailty = wait_for_element_located(self.driver, By.CSS_SELECTOR,
-                                                "#auctionListTbody > tr:nth-child(1) > td:nth-child(6) > div > em")
-        print("가격 : /{aaa}/".format(aaa=temp_quailty))
-     
-        temp_button = self.driver.find_element_by_css_selector("#auctionListTbody > tr:nth-child(1) > td:nth-child(6) > div > em")
-        money_str = temp_button.text.replace(",","")
-        target_price = int(money_str)
+        time.sleep(2)
 
-        return target_price / target_quality
+        
+        items = []
+        i = 1
+        while i < option_list_count:
+            # 아이템 리스트를 아래 3개 까지 긁어다 리스트로 전달한다.
+            if i == 4:
+                break
+
+            quality = wait_for_element_located(self.driver, By.CSS_SELECTOR,
+                          "#auctionListTbody > tr:nth-child({idx}) > td:nth-child(3) > div > span.txt".format(idx=i)).text
+
+            price = wait_for_element_located(self.driver, By.CSS_SELECTOR,
+                          "#auctionListTbody > tr:nth-child({idx}) > td:nth-child(6) > div > em".format(idx=i))
+           
+            price = price.text.replace(",","")
+            if price == '-':
+                i += 1
+                continue
+
+            item = lost_ark_info.ItemInfo()
+            item.bonus1_idx = bonus_index
+            item.bonus2_idx = bonus_index2
+            item.stats1_idx = stats
+            item.stats2_idx = stats2
+            item.price = int(price)
+            item.quality = int(quality)
+            items.append(item)
+            i += 1
+
+        return items
 
         
     def __del__(self):

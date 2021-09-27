@@ -90,3 +90,22 @@ class LostArkCharacterInfo():
     stats_idxs = []
     legend_book_idx = -1
     hero_book_idx = -1
+
+
+class ItemInfo():
+    bonus1_idx = -1
+    bonus1_amount = -1
+    bonus2_idx = -1
+    bonus2_amount = -1
+    stats1_idx = -1
+    stats1_amount = -1
+    stats2_idx = -1
+    stats2_amount = -1
+
+    price = -1
+    quality = -1
+
+    def __repr__(self):
+        str1 = bonus_index_to_string(self.bonus1_idx)
+        str2 = bonus_index_to_string(self.bonus2_idx)
+        return "(+5 : {aa}, +3 : {bb}, 가격 : {price},  품질 : {quality})".format(aa=str1,bb=str2, price=self.price, quality=self.quality)
