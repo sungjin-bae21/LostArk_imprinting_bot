@@ -51,7 +51,8 @@ class LostArckAuctionBrowser:
     driver = None
     def __init__(self):
         options = webdriver.ChromeOptions()
-        options.add_argument("--start-fullscreen")
+        options.add_argument("--headless")
+
         self.driver = webdriver.Chrome(executable_path=system_info.CHROME_DRIVER_PATH, options=options)
         # 묵시적 대기, 활성화를 위해 15 초까지 기다린다.
         self.driver.implicitly_wait(15)
